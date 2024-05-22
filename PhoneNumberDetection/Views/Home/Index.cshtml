@@ -1,0 +1,78 @@
+﻿@model PhoneNumberDetectionWeb.Models.PhoneNumberViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Phone Number Detection</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <style>
+        .detected-number {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2em;
+        }
+
+        .format-label {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Phone Number Detection</h1>
+
+        <form asp-action="Index" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="InputText">Enter text:</label>
+                <textarea asp-for="InputText" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="FileUpload">Or upload a text file:</label>
+                <input type="file" asp-for="UploadedFile" class="form-control-file" />
+            </div>
+            <button type="submit" class="btn btn-primary">Detect</button>
+        </form>
+
+        <div class="mt-4">
+            @if (Model.Errors != null && Model.Errors.Count > 0)
+            {
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach (var error in Model.Errors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <h2>Detected Phone Numbers</h2>
+            @if (Model.DetectedNumbers != null && Model.DetectedNumbers.Count > 0)
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Phone Number</th>
+                            <th>Format</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var numberInfo in Model.DetectedNumbers)
+                        {
+                            <tr>
+                                <td class="detected-number">@numberInfo.Number</td>
+                                <td class="format-label">@numberInfo.Format</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else if (Model.Errors == null || Model.Errors.Count == 0)
+            {
+                <p>No phone numbers detected.</p>
+            }
+        </div>
+    </div>
+</body>
+</html>
